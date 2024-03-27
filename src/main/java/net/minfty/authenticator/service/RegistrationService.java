@@ -1,15 +1,22 @@
 package net.minfty.authenticator.service;
 
-import net.minfty.authenticator.entity.RegistrationData;
+import net.minfty.authenticator.entity.User;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RegistrationService {
-    public boolean validate(RegistrationData registrationData) {
-        // TODO email validieren
-        // TODO überprüfung ob der Username oder die Email schon vorhanden ist
-        // TODO vor und nachname + password != null
-        System.out.println(registrationData.getEmail());
-        return false;
+
+    public void validate(User registrationData) throws InvalidUserDataException{
+        if (isValidEmail(registrationData.getEmail())) {
+            System.out.println("Email ist valide");
+        } else {
+            throw new InvalidUserDataException("Ungültige E-Mail-Adresse");
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        EmailValidator validator = EmailValidator.getInstance();
+        return validator.isValid(email);
     }
 }

@@ -1,11 +1,14 @@
 package net.minfty.authenticator.entity;
 
-public class RegistrationData {
+import net.minfty.authenticator.enums.Role;
+
+public class User {
     private String username;
     private String firstName;
     private String lastName;
     private String password;
     private String email;
+    private Role role;
 
     public String getUsername() {
         return username;
@@ -46,4 +49,14 @@ public class RegistrationData {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+
 }

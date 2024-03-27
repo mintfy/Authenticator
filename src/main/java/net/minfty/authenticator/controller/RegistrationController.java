@@ -1,6 +1,7 @@
 package net.minfty.authenticator.controller;
 
-import net.minfty.authenticator.entity.RegistrationData;
+import net.minfty.authenticator.entity.User;
+import net.minfty.authenticator.service.InvalidUserDataException;
 import net.minfty.authenticator.service.RegistrationService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RegistrationController {
 
-
     private final RegistrationService registrationService;
 
     public RegistrationController(RegistrationService registrationService) {
@@ -20,15 +20,20 @@ public class RegistrationController {
     }
 
     @PostMapping("/api/auth")
-    public ResponseEntity<?> receiveData(@RequestBody RegistrationData registrationData) {
-        registrationService.validate(registrationData);
-
-        String test = "i am the body";
+    public ResponseEntity<?> receiveData(@RequestBody User registrationData) {
+        String responseBody = "Registrierung erfolgreich!";
         HttpHeaders responseHeaders = new HttpHeaders();
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .headers(responseHeaders)
-                .body(test);
+        try {
+            registrationService.validate(registrationData);
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                    .headers(responseHeaders)
+                    .body(responseBody);
+        } catch (InvalidUserDataException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .headers(responseHeaders)
+                    .body(e.getMessage());
+        }
     }
 
 }
