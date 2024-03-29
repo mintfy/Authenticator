@@ -1,15 +1,22 @@
 package net.minfty.authenticator.entity;
 
-import net.minfty.authenticator.enums.Role;
+import jakarta.persistence.*;
 
+
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String username;
     private String firstName;
     private String lastName;
     private String password;
     private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "roleId", referencedColumnName = "id")
     private Role role;
 
     public String getUsername() {

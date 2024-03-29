@@ -20,7 +20,7 @@ public class DBAccessHelper {
     public DBAccessHelper() {
         properties = new Properties();
         try {
-            properties.load(new FileInputStream("src/main/resources/jdbc.properties"));
+            properties.load(new FileInputStream("src/main/resources/application.properties"));
         } catch (IOException exception) {
             LOGGER.error("Fehler beim Laden der JDBC-Properties", exception);
             throw new RuntimeException("Fehler beim Laden der JDBC-Properties", exception);

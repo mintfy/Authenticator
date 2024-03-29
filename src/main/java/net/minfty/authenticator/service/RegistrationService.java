@@ -23,7 +23,7 @@ public class RegistrationService {
         this.dbAccessHelper = dbAccessHelper;
     }
 
-    public void validate(User registrationData) throws InvalidUserDataException{
+    public void validate(User registrationData) throws InvalidUserDataException {
         validateEmail(registrationData.getEmail());
         validateUsernameAndEmailUniqueness(registrationData.getUsername(), registrationData.getEmail());
         validateNameAndPassword(registrationData.getFirstName(), registrationData.getLastName(), registrationData.getPassword());
