@@ -3,6 +3,8 @@ package net.minfty.authenticator.entity;
 import net.minfty.authenticator.enums.Role;
 
 public class User {
+
+    private long id;
     private String username;
     private String firstName;
     private String lastName;
@@ -58,5 +60,11 @@ public class User {
         this.role = role;
     }
 
+    public long getId() {
+        return id;
+    }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 }
