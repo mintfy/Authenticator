@@ -29,9 +29,9 @@ public class DBAccessHelper {
 
     public Connection getDatabaseConnection() throws SQLException {
         return DriverManager.getConnection(
-                properties.getProperty("url"),
-                properties.getProperty("username"),
-                properties.getProperty("password")
+                properties.getProperty("spring.datasource.url"),
+                properties.getProperty("spring.datasource.username"),
+                properties.getProperty("spring.datasource.password")
         );
     }
 }

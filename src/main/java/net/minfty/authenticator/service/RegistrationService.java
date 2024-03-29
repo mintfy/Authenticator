@@ -1,7 +1,10 @@
 package net.minfty.authenticator.service;
 
 import net.minfty.authenticator.database.DBAccessHelper;
+import net.minfty.authenticator.entity.Role;
 import net.minfty.authenticator.entity.User;
+import net.minfty.authenticator.repository.RoleRepository;
+import net.minfty.authenticator.repository.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +21,20 @@ import java.util.regex.Pattern;
 public class RegistrationService {
 
     private final DBAccessHelper dbAccessHelper;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public RegistrationService(DBAccessHelper dbAccessHelper) {
+    public RegistrationService(DBAccessHelper dbAccessHelper, UserRepository userRepository, RoleRepository roleRepository) {
         this.dbAccessHelper = dbAccessHelper;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
+
+    public void registerUser(User registrationData) throws InvalidUserDataException {
+        validate(registrationData);
+        Role studentRole = roleRepository.findByName("STUDENT").orElseThrow(() -> new RuntimeException("Rolle STUDENT nicht gefunden"));
+        registrationData.setRole(studentRole);
+        userRepository.save(registrationData);
     }
 
     public void validate(User registrationData) throws InvalidUserDataException {
@@ -76,7 +90,7 @@ public class RegistrationService {
     }
 
     private boolean isValidPassword(String password) {
-        Pattern pattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\\\S+$).{12,}$");
+        Pattern pattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,}$");
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
     }

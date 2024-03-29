@@ -25,7 +25,7 @@ public class RegistrationController {
         HttpHeaders responseHeaders = new HttpHeaders();
 
         try {
-            registrationService.validate(registrationData);
+            registrationService.registerUser(registrationData);
             return ResponseEntity.status(HttpStatus.ACCEPTED)
                     .headers(responseHeaders)
                     .body(responseBody);
