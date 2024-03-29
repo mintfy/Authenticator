@@ -5,10 +5,14 @@ import net.minfty.authenticator.entity.User;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class RegistrationService {
@@ -29,6 +33,13 @@ public class RegistrationService {
         EmailValidator validator = EmailValidator.getInstance();
         if(!validator.isValid(email)) {
             throw new InvalidUserDataException("Ungültige E-Mail Adresse");
+        }
+
+        try {
+            InternetAddress internetAddress = new InternetAddress(email);
+            internetAddress.validate();
+        } catch (AddressException exception) {
+            throw new InvalidUserDataException("Ungültige E-Mail-Domain");
         }
     }
 
@@ -51,8 +62,22 @@ public class RegistrationService {
     }
 
     private void validateNameAndPassword(String firstName, String lastName, String password) throws InvalidUserDataException {
-        if (firstName == null || lastName == null || password == null) {
-            throw new InvalidUserDataException("Vor- und Nachname sowie Passwort dürfen nicht null sein");
+        if (isValidName(firstName) || isValidName(lastName)) {
+            throw new InvalidUserDataException("Ungültiger Vor- oder Nachname");
         }
+
+        if (!isValidPassword(password)) {
+            throw new InvalidUserDataException("Ungültiges Passwort");
+        }
+    }
+
+    private boolean isValidName(String name) {
+        return name == null || name.isEmpty() || !name.matches("[a-zA-ZäöüÄÖÜß\\\\s]+");
+    }
+
+    private boolean isValidPassword(String password) {
+        Pattern pattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\\\S+$).{12,}$");
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 }
